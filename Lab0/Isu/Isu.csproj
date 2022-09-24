@@ -18,5 +18,11 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Entities\CounterOfStudents.cs" />
+      <Compile Remove="Entities\ListOfGroups.cs" />
+      <Compile Remove="Models\пркнр.cs" />
+    </ItemGroup>
     
 </Project>
