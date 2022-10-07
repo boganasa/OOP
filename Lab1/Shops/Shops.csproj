@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <None Include="..\..\.editorconfig" />
+        <None Remove="Services\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -17,6 +18,14 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Services\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Services\**" />
     </ItemGroup>
 
 </Project>
