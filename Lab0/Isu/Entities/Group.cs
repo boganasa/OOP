@@ -7,47 +7,47 @@ namespace Isu.Entities;
 public class Group
 {
     private const int NumberOfStudents = 21;
-    private readonly GroupName _groupName = null!;
-    private readonly List<Student> _students = null!;
+    private GroupName groupName = null!;
+    private List<Student> _students = new List<Student>();
 
     public Group() { }
 
     public Group(GroupName groupName)
     {
-        _groupName = groupName;
+        this.groupName = groupName;
         _students = new List<Student>();
     }
 
     public Group(GroupName groupName, List<Student> students)
     {
-        if (students.Count > NumberOfStudents)
+        if (students.Count > NumberOfStudents && students is not null)
         {
             throw new NumberOfStudentsException($"The number of students is more than allowed: {NumberOfStudents} < {students.Count}");
         }
 
-        _groupName = groupName;
-        _students = students;
+        this.groupName = groupName;
+        _students = students!;
     }
 
     public void AddNewStudent(Student student)
     {
-        if (_students.Count + 1 > NumberOfStudents)
+        if (_students.Count + 1 > NumberOfStudents && _students is not null)
         {
-            throw new NumberOfStudentsException($"The number of students is more than allowed: {NumberOfStudents} < {_students.Count + 1}");
+            throw new NumberOfStudentsException($"The number of students is more than allowed: {NumberOfStudents} < {_students!.Count + 1}");
         }
 
-        if (_students.Contains(student))
+        if (_students != null && _students.Contains(student))
         {
-            throw new StudentExistenceException($"Student {student.Name()} is already in the group {student.Group() !._groupName}");
+            throw new StudentExistenceException($"Student {student.Name()} is already in the group {student.Group() !.groupName}");
         }
 
-        if (student.Group() != null)
+        if (student.Group() is not null)
         {
             throw new StudentExistenceException(
-                $"Student {student.Name()} is already in the another group {_groupName}");
+                $"Student {student.Name()} is already in the another group {groupName}");
         }
 
-        _students.Add(student);
+        _students?.Add(student);
         student.SetGroup(this);
     }
 
@@ -55,13 +55,13 @@ public class Group
     {
         if (!_students.Contains(student))
         {
-            throw new StudentExistenceException($"Student {student.Name()} is not in the group {_groupName}");
+            throw new StudentExistenceException($"Student {student.Name()} is not in the group {groupName}");
         }
 
         _students.Remove(student);
         student.SetGroup(null);
     }
 
-    public GroupName Name() => _groupName;
+    public GroupName Name() => groupName;
     public List<Student> ListOfStudents() => _students;
 }

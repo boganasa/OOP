@@ -12,7 +12,7 @@ public class GroupName
         const string validLetters = "DGHKLMNOPRTUVZf";
         if (megaFaculty.Length != 1 || !validLetters.Contains(megaFaculty))
         {
-            throw new WrongGroupNameException($"Megafaculty {megaFaculty}  does not exist");
+                throw new WrongGroupNameException($"Megafaculty {megaFaculty}  does not exist");
         }
 
         if (formOfStudy.Length != 1 || formOfStudy[0] != '3')
