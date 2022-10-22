@@ -43,6 +43,12 @@ public class Lesson
 
     public static IDayBuilder Builder => new LessonBuilder();
 
+    public bool Intersect(Lesson secondLesson)
+    {
+        return this.GetDay() == secondLesson.GetDay() &&
+               this.GetNumberOfLesson == secondLesson.GetNumberOfLesson;
+    }
+
     public int GetDay() => _day;
     public int GetNumberOfLesson() => _numberOfLesson;
     public string GetNameOfSubject() => _nameOfSubject;

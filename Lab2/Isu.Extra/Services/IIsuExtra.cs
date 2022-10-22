@@ -6,10 +6,6 @@ namespace Isu.Extra.Services;
 
 public interface IIsuExtra
 {
-    public ElectiveModule CreateNewCourse(char megafaculty, string name, List<Division> divisions);
-
-    public Lesson CreateLesson(int day, int numberOfLesson, string nameOfSubject, string nameOfTeacher, int numberOfAuditory);
-
     public IReadOnlyList<Division> GetListOfDivision(ElectiveModule course);
 
     public IReadOnlyList<ExtraStudent> GetListOfStudentsInDivision(Division division);

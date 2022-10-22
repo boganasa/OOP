@@ -7,29 +7,19 @@ using Isu.Services;
 
 namespace Isu.Extra.Services;
 
-public class IsuExtra : ClassInterface, IIsuExtra
+public class IsuExtra : IIsuService, IIsuExtra
 {
     private List<ElectiveModule> _listOsCourses = new List<ElectiveModule>();
+    private List<ExtraGroup> _listOfGroup = new List<ExtraGroup>();
+    private IIsuService _isuService = new ClassInterface();
 
     public IReadOnlyList<ElectiveModule> GetListOfCourses() => _listOsCourses;
 
-    public ElectiveModule CreateNewCourse(char megafaculty, string name, List<Division> divisions)
+    public ElectiveModule CreateNewCourse(char megafaculty, string name)
     {
-        var newCourse = new ElectiveModule(megafaculty, name, divisions);
+        var newCourse = new ElectiveModule(megafaculty, name);
         _listOsCourses.Add(newCourse);
         return newCourse;
-    }
-
-    public Lesson CreateLesson(int day, int numberOfLesson, string nameOfSubject, string nameOfTeacher, int numberOfAuditory)
-    {
-        Lesson newLesson = Lesson.Builder
-            .WithDay(day)
-            .WithNumber(numberOfLesson)
-            .WithSubject(nameOfSubject)
-            .WithNameOfTeacher(nameOfTeacher)
-            .WithNumberOfAuditory(numberOfAuditory)
-            .Build();
-        return newLesson;
     }
 
     public IReadOnlyList<Division> GetListOfDivision(ElectiveModule course)
@@ -54,7 +44,7 @@ public class IsuExtra : ClassInterface, IIsuExtra
         var studentsOutOfCourses = new List<ExtraStudent>();
         foreach (ExtraStudent student in group.GetStudents())
         {
-            if (student.GetFirstDivision() is null && student.GetSecondDivision() is null)
+            if (!student.IsStudentInCourse())
             {
                 studentsOutOfCourses.Add(student);
             }
@@ -71,7 +61,7 @@ public class IsuExtra : ClassInterface, IIsuExtra
 
     public TimeTable SignUpForCourse(ExtraStudent student, ElectiveModule course)
     {
-        if (student.GetFirstDivision() is not null && student.GetSecondDivision() is not null)
+        if (student.GetDivisions().Count == student.GetAllowCount())
         {
             throw new ListOfCoursesIsFullException(student);
         }
@@ -90,15 +80,7 @@ public class IsuExtra : ClassInterface, IIsuExtra
 
             if (flag)
             {
-                if (student.GetFirstDivision() is null)
-                {
-                    student.SetFirstDivision(division);
-                }
-                else
-                {
-                    student.SetSecondDivision(division);
-                }
-
+                student.SetDivisions(division);
                 var newListOfLessons = new List<Lesson>(curTimeTable);
                 newListOfLessons.AddRange(division.GetTimeTable().GetLessons());
                 var newTimeTable = new TimeTable(newListOfLessons);
@@ -107,7 +89,7 @@ public class IsuExtra : ClassInterface, IIsuExtra
             }
         }
 
-        if (!flag)
+        if (!flag && course.GetDivisions().Count != 0)
         {
             throw new IsNotSuitableCoursesException(student, course);
         }
@@ -117,23 +99,99 @@ public class IsuExtra : ClassInterface, IIsuExtra
 
     public TimeTable DeleteReservation(ExtraStudent student, Division division)
     {
-        if (student.GetFirstDivision() == division)
+        bool flag = false;
+        foreach (Division curdivision in student.GetDivisions())
         {
-            TimeTable newTimeTable = student.DeleteTimeTable(division.GetTimeTable());
-            student.SetTimeTable(newTimeTable);
-            student.SetFirstDivision(null!);
-            return newTimeTable;
+            if (curdivision == division)
+            {
+                flag = true;
+                TimeTable newTimeTable = student.DeleteTimeTable(division.GetTimeTable());
+                student.SetTimeTable(newTimeTable);
+                student.SetDivisions(division);
+                return newTimeTable;
+            }
         }
-        else if (student.GetSecondDivision() == division)
-        {
-            TimeTable newTimeTable = student.DeleteTimeTable(division.GetTimeTable());
-            student.SetTimeTable(newTimeTable);
-            student.SetSecondDivision(null!);
-            return newTimeTable;
-        }
-        else
+
+        if (!flag)
         {
             throw new IsNotstudentDivisionException(student);
         }
+
+        return student.GetTimeTable();
+    }
+
+    public Group? AddGroup(GroupName name)
+    {
+        Group? group = _isuService.AddGroup(name);
+        if (group is null)
+        {
+            throw new InvalidOperationException();
+        }
+
+        var extraGroup = new ExtraGroup(group.Name(), null!);
+        return group;
+    }
+
+    public Student AddStudent(Group group, string name)
+    {
+        Student student = _isuService.AddStudent(group, name);
+        var extraGroup = new ExtraGroup(group.Name(), null!);
+        var extraStudent = new ExtraStudent(student.Name(), student.IdNumber(), extraGroup, 2);
+        return student;
+    }
+
+    public Student GetStudent(int id)
+    {
+        Student student = _isuService.GetStudent(id);
+        var extraGroup = new ExtraGroup(student.Group() !.Name(), null!);
+        var extraStudent = new ExtraStudent(student.Name(), student.IdNumber(), extraGroup, 2);
+        foreach (ExtraGroup group in _listOfGroup)
+        {
+            foreach (ExtraStudent curstudent in group.GetStudents())
+            {
+                if (curstudent.GetStudent() == student)
+                {
+                    extraStudent = curstudent;
+                    break;
+                }
+            }
+        }
+
+        return student;
+    }
+
+    public Student? FindStudent(int id)
+    {
+        Student? student = _isuService.FindStudent(id);
+        return student;
+    }
+
+    public List<Student> FindStudents(GroupName groupName)
+    {
+        List<Student> students = _isuService.FindStudents(groupName);
+        return students;
+    }
+
+    public List<Student> FindStudents(CourseNumber courseNumber)
+    {
+        List<Student> students = _isuService.FindStudents(courseNumber);
+        return students;
+    }
+
+    public Group? FindGroup(GroupName groupName)
+    {
+        Group? group = _isuService.FindGroup(groupName);
+        return group;
+    }
+
+    public List<Group> FindGroups(CourseNumber courseNumber)
+    {
+        List<Group> groups = _isuService.FindGroups(courseNumber);
+        return groups;
+    }
+
+    public void ChangeStudentGroup(Student student, Group newGroup)
+    {
+        _isuService.ChangeStudentGroup(student, newGroup);
     }
 }

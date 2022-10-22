@@ -47,3 +47,9 @@ public class IsNotstudentDivisionException : TimetableException
     public IsNotstudentDivisionException(ExtraStudent student)
         : base($"Student {student.GetStudent().Name()} hasn't got division") { }
 }
+
+public class LessonsAreIntersectException : TimetableException
+{
+    public LessonsAreIntersectException()
+        : base($"Lessons Are Intersect") { }
+}

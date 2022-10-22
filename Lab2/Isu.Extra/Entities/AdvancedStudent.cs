@@ -5,51 +5,39 @@ using Isu.Models;
 
 namespace Isu.Extra;
 
-public class ExtraStudent : Student
+public class ExtraStudent
 {
     private Student _student;
-    private ExtraGroup _group = null!;
-    private TimeTable _timetable = null!;
-    private Division _firstDivision = null!;
-    private Division _secondDivision = null!;
+    private ExtraGroup _group;
+    private TimeTable _timetable;
+    private IReadOnlyList<Division> _divisions = new List<Division>();
+    private int _allowCount;
 
-    public ExtraStudent()
-    {
-        _student = new Student();
-        _timetable = null!;
-    }
-
-    public ExtraStudent(string name, Id id)
+    public ExtraStudent(string name, Id id, ExtraGroup group, int allowCount)
     {
         _student = new Student(name, id);
-    }
-
-    public ExtraStudent(string name, Id id, ExtraGroup group)
-    {
-        _student = new Student(name, id, group);
-        _timetable = group.GetTimeTable();
         _group = group;
+        _timetable = group.GetTimeTable();
+        _allowCount = allowCount;
     }
 
-    public ExtraGroup GetGroup()
-    {
-        var group = new ExtraGroup(_group);
-        return group;
-    }
+    public ExtraGroup GetGroup() => _group;
 
     public TimeTable GetTimeTable() => _timetable;
-    public Division GetFirstDivision() => _firstDivision;
-    public Division GetSecondDivision() => _secondDivision;
+    public IReadOnlyList<Division> GetDivisions() => _divisions;
     public Student GetStudent() => _student;
+    public int GetAllowCount() => _allowCount;
 
-    public void SetFirstDivision(Division division)
+    public void SetDivisions(Division division)
     {
-       _firstDivision = division;
-    }
+        List<Division> divisions = new List<Division>(_divisions);
+        divisions.Add(division);
+        if (divisions.Count > _allowCount)
+        {
+            throw new ListOfCoursesIsFullException(this);
+        }
 
-    public void SetSecondDivision(Division division)
-    {
-       _secondDivision = division;
+        _divisions = new List<Division>(divisions);
     }
 
     public void SetTimeTable(TimeTable timeTable)
@@ -59,7 +47,15 @@ public class ExtraStudent : Student
 
     public bool IsStudentInCourse()
     {
-        return _firstDivision is not null || _secondDivision is not null;
+        foreach (Division division in _divisions)
+        {
+            if (division is not null)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public TimeTable DeleteTimeTable(TimeTable timeTable)

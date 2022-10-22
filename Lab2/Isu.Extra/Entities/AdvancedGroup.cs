@@ -4,7 +4,7 @@ using Isu.Models;
 
 namespace Isu.Extra;
 
-public class ExtraGroup : Group
+public class ExtraGroup
 {
     private TimeTable _timetable;
     private Group _group;
@@ -16,23 +16,10 @@ public class ExtraGroup : Group
         _timetable = timetable;
     }
 
-    public ExtraGroup(GroupName groupName, List<ExtraStudent> students, TimeTable timetable)
-    {
-        _group = new Group(groupName);
-        foreach (ExtraStudent student in students)
-        {
-            student.SetTimeTable(timetable);
-            _students.Add(student);
-            _group.AddNewStudent(student.GetStudent());
-        }
-
-        _timetable = timetable;
-    }
-
     public ExtraGroup(ExtraGroup group)
     {
         _group = group.GetGroup();
-        _students = group.GetStudents();
+        _students = (List<ExtraStudent>)group.GetStudents();
         _timetable = group.GetTimeTable();
     }
 
@@ -45,14 +32,7 @@ public class ExtraGroup : Group
 
     public TimeTable GetTimeTable() => _timetable;
 
-    public List<ExtraStudent> GetStudents()
-    {
-        var list = new List<ExtraStudent>(_students);
-        return list;
-    }
+    public IReadOnlyCollection<ExtraStudent> GetStudents() => _students;
 
-    public Group GetGroup()
-    {
-        return _group;
-    }
+    public Group GetGroup() => _group;
 }

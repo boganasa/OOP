@@ -9,9 +9,9 @@ public class Division
     private IReadOnlyList<ExtraStudent> _students = new List<ExtraStudent>();
     private TimeTable _timetable;
 
-    public Division(int maxNumberOfStudents, TimeTable timetable)
+    public Division(int maxNumberOfStudents, TimeTable timetable, ElectiveModule course)
     {
-        _course = null!;
+        _course = course;
         _maxNumberOfStudents = maxNumberOfStudents;
         _timetable = timetable;
     }

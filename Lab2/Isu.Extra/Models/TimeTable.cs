@@ -5,10 +5,32 @@ namespace Isu.Extra.Models;
 
 public class TimeTable
 {
-   private IReadOnlyList<Lesson> _lessons;
+   private IReadOnlyList<Lesson> _lessons = new List<Lesson>();
 
    public TimeTable(List<Lesson> lessons)
    {
+      List<Lesson> testLesson = new List<Lesson>();
+      foreach (var curLesson in lessons)
+      {
+         testLesson.Add(curLesson);
+      }
+
+      if (testLesson.Count > 1)
+      {
+         for (int index = 0; index < testLesson.Count; index++)
+         {
+            Lesson lesson1 = testLesson[index];
+            testLesson.Remove(lesson1);
+            foreach (Lesson lesson in testLesson)
+            {
+               if (lesson1.Intersect(lesson))
+               {
+                  throw new LessonsAreIntersectException();
+               }
+            }
+         }
+      }
+
       _lessons = new List<Lesson>(lessons);
    }
 
@@ -18,20 +40,12 @@ public class TimeTable
    {
       if (obj is TimeTable timeTable)
       {
-         foreach (Lesson lesson in _lessons)
-         {
-            if (!timeTable.GetLessons().Contains(lesson))
-            {
-               return false;
-            }
-         }
+         return _lessons.All(lesson => timeTable.GetLessons().Contains(lesson));
       }
       else
       {
          throw new IsNotTimetableException(obj);
       }
-
-      return true;
    }
 
    public override int GetHashCode()

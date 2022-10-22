@@ -7,9 +7,9 @@ public class ElectiveModule
 {
     private char _megafaculty;
     private string _name;
-    private IReadOnlyList<Division> _divisions;
+    private IReadOnlyList<Division> _divisions = new List<Division>();
 
-    public ElectiveModule(char megafaculty, string name, List<Division> divisions)
+    public ElectiveModule(char megafaculty, string name)
     {
         const string validLetters = "DGHKLMNOPRTUVZ";
         if (!validLetters.Contains(megafaculty))
@@ -19,15 +19,14 @@ public class ElectiveModule
 
         _megafaculty = megafaculty;
         _name = name;
-        foreach (Division division in divisions)
-        {
-            division.SetElectiveModule(this);
-        }
-
-        _divisions = new List<Division>(divisions);
     }
 
     public IReadOnlyList<Division> GetDivisions() => _divisions;
     public char GetMegafaculty() => _megafaculty;
     public string GetName() => _name;
+
+    public void SetDivisions(List<Division> divisions)
+    {
+        _divisions = new List<Division>(divisions);
+    }
 }
