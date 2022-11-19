@@ -28,8 +28,7 @@ namespace Backups.Test
             var objectA = new BackupObject(repository, first);
             var objectB = new BackupObject(repository, second);
 
-            // var directory = new PathZio("/home/runner/work/boganasa/boganasa/Lab3/Backups/BackupTask");
-            var directory = new PathZio("/BackupTask");
+            var directory = new PathZio("/home/runner/work/boganasa/boganasa/Lab3/Backups/BackupTask");
             var backupTask = new BackupTask(config, directory, new Backup());
 
             backupTask.AddBackupObject(objectA);
