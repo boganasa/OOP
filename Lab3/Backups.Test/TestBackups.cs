@@ -20,14 +20,16 @@ namespace Backups.Test
             fileSystem.CreateDirectory(second.FullPath().TooString());
             fileSystem.CreateFile(second.TooString()).Close();
 
+            IArchive archiver = new ArchiveAsZip();
             IRepository repository = new RepositoryZio(fileSystem);
             IStorageAlgorithm storageAlgorithm = new SplitStorageAlgorithm();
-            var config = new Config(repository, storageAlgorithm);
+            var config = new Config(archiver, repository, storageAlgorithm);
 
             var objectA = new BackupObject(repository, first);
             var objectB = new BackupObject(repository, second);
 
-            var directory = new PathZio("/home/runner/work/boganasa/boganasa/Lab3/Backups/BackupTask");
+            // var directory = new PathZio("/home/runner/work/boganasa/boganasa/Lab3/Backups/BackupTask");
+            var directory = new PathZio("/BackupTask");
             var backupTask = new BackupTask(config, directory, new Backup());
 
             backupTask.AddBackupObject(objectA);

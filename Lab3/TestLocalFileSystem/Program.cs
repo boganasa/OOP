@@ -11,25 +11,28 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        IPath pathA = new PathZio("/Stacy/ITMO/English/chart.docx");
-        var pathB = new PathZio("/Stacy/ITMO/English/StuckInTheOcean");
-        
+        IFileSystem fileSystem = new MemoryFileSystem();
+        var first = new PathZio("/directory1/A.txt");
+        var second = new PathZio("/directory2/B.txt");
+        fileSystem.CreateDirectory(first.FullPath().TooString());
+        fileSystem.CreateFile(first.TooString()).Close();
+        fileSystem.CreateDirectory(second.FullPath().TooString());
+        fileSystem.CreateFile(second.TooString()).Close();
 
-        IRepository repository = new RepositoryLocal();
         IArchive archiver = new ArchiveAsZip();
+        IRepository repository = new RepositoryZio(fileSystem);
         IStorageAlgorithm storageAlgorithm = new SingleStorageAlgorithm();
-        var config = new Config(repository, storageAlgorithm);
+        var config = new Config(archiver, repository, storageAlgorithm);
 
-        var objectA = new BackupObject(repository, pathA);
-        var objectB = new BackupObject(repository, pathB);
+        var objectA = new BackupObject(repository, first);
+        var objectB = new BackupObject(repository, second);
 
-        IPath backupTaskDirName = new PathZio("/Stacy/ITMO/English/BackupTask");
-        var backupTask = new BackupTask(config, backupTaskDirName, new Backup());
+        var directory = new PathZio("/BackupTask");
+        var backupTask = new BackupTask(config, directory, new Backup());
 
         backupTask.AddBackupObject(objectA);
         backupTask.AddBackupObject(objectB);
 
         backupTask.Run();
-
     }
 }

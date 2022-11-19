@@ -10,7 +10,8 @@ public class SplitStorageAlgorithm : IStorageAlgorithm
         var storages = new List<IStorage>();
         foreach (BackupObject backupObject in objects)
         {
-            storages.Add(archive.Archive(repository, new List<BackupObject> { backupObject }, path, backupObject.Path.FullPath().GetName().ToString() !));
+            name = backupObject.Path.TooString();
+            storages.Add(archive.Archive(repository, new List<BackupObject> { backupObject }, path, name));
         }
 
         storages[0] = storages[0].Adapt(storages);

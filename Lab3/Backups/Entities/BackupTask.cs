@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Backups.Exceptions;
 using Backups.Models;
 using Backups.Services;
 
@@ -22,6 +23,11 @@ public class BackupTask
     public void RemoveBackupObject(BackupObject newObject)
     {
         var list = new List<BackupObject>(Objects);
+        if (!list.Contains(newObject))
+        {
+            throw new ExistanceinBackup(newObject.ToString() !);
+        }
+
         list.Remove(newObject);
         Objects = new List<BackupObject>(list);
     }
@@ -29,17 +35,21 @@ public class BackupTask
     public void AddBackupObject(BackupObject newObject)
     {
         var list = new List<BackupObject>(Objects);
+        if (list.Contains(newObject))
+        {
+            throw new ExistanceinBackup(newObject.ToString() !);
+        }
+
         list.Add(newObject);
         Objects = new List<BackupObject>(list);
     }
 
     public void Run()
     {
-        IArchive archive = new ArchiveAsZip();
         DateTime data = DateTime.Now;
         string dataToString = data.ToString(CultureInfo.CurrentCulture).Replace(":", "_");
         IPath fullPath = Path.Concat(dataToString);
-        IStorage newStorage = Config.Algorithm.RunStorageAlgorithm(archive, Config.Repository, Objects, fullPath, dataToString);
+        IStorage newStorage = Config.Algorithm.RunStorageAlgorithm(Config.Archiver, Config.Repository, Objects, fullPath, dataToString);
         var newPoint = new RestorePoint(Objects, newStorage, data);
         Backup.AddRestorePoint(newPoint);
     }

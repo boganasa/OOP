@@ -7,6 +7,11 @@ public class RepositoryLocal : IRepository
 {
     public IRepoObject GetObject(IPath path)
     {
+        if (path.TooString() == string.Empty)
+        {
+            throw new NullPath();
+        }
+
         if (File.Exists(path.ToString()))
         {
             var newFunc = new Func<Stream>(() => File.OpenRead(path.TooString()));
@@ -23,7 +28,7 @@ public class RepositoryLocal : IRepository
             return directory;
         }
 
-        throw new ExistanceOfBackup(path.TooString());
+        throw new Existance(path.TooString());
     }
 
     public Stream OpenWrite(IPath path)

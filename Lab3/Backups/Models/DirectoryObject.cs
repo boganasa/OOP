@@ -1,4 +1,5 @@
-﻿using Backups.Services;
+﻿using Backups.Exceptions;
+using Backups.Services;
 
 namespace Backups.Models;
 
@@ -7,6 +8,11 @@ public class DirectoryObject : IRepoDirectory
     private Func<IReadOnlyList<IRepoObject>> _func;
     public DirectoryObject(Func<IReadOnlyList<IRepoObject>> objects, IPath path)
     {
+        if (path.TooString() == string.Empty)
+        {
+            throw new NullPath();
+        }
+
         _func = objects;
         Path = path;
     }

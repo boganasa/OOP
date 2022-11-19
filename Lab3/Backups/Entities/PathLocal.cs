@@ -1,4 +1,5 @@
-﻿using Backups.Services;
+﻿using Backups.Exceptions;
+using Backups.Services;
 using Zio;
 
 namespace Backups.Entities;
@@ -7,6 +8,11 @@ public class PathLocal : IPath
 {
     public PathLocal(string path)
     {
+        if (path == string.Empty)
+        {
+            throw new NullPath();
+        }
+
         Path = path;
     }
 
@@ -19,12 +25,22 @@ public class PathLocal : IPath
 
     public IPath Concat(IPath path)
     {
+        if (path.TooString() == string.Empty)
+        {
+            throw new NullPath();
+        }
+
         var newPath = new PathLocal($"{this.TooString()}/{path.TooString()}");
         return newPath;
     }
 
     public IPath Concat(string path)
     {
+        if (path == string.Empty)
+        {
+            throw new NullPath();
+        }
+
         var newPath = new PathLocal($"{this.TooString()}/{path}");
         return newPath;
     }

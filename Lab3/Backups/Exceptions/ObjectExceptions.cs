@@ -6,8 +6,14 @@ public abstract class ObjectException : Exception
         : base(message) { }
 }
 
-public class ExistanceOfBackup : ObjectException
+public class Existance : ObjectException
 {
-    public ExistanceOfBackup(string name)
+    public Existance(string name)
         : base($"File {name} is not exist") { }
+}
+
+public class ExistanceinBackup : ObjectException
+{
+    public ExistanceinBackup(string name)
+        : base($"File {name} is not exist in current backup") { }
 }

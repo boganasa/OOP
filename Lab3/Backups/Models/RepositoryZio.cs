@@ -14,6 +14,11 @@ public class RepositoryZio : IRepository
     public IFileSystem FileSystem { get; }
     public IRepoObject GetObject(IPath path)
     {
+        if (path.TooString() == string.Empty)
+        {
+            throw new NullPath();
+        }
+
         if (FileSystem.FileExists(path.TooString()))
         {
             var newFunc = new Func<Stream>(() => FileSystem.OpenFile(path.TooString(), FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
@@ -28,11 +33,16 @@ public class RepositoryZio : IRepository
             return new DirectoryObject(newFunc, path);
         }
 
-        throw new ExistanceOfBackup(path.TooString());
+        throw new Existance(path.TooString());
     }
 
     public Stream OpenWrite(IPath path)
     {
+        if (path.TooString() == string.Empty)
+        {
+            throw new NullPath();
+        }
+
         Directory.CreateDirectory(path.FullPath().TooString());
         return File.OpenWrite(path.TooString());
     }
