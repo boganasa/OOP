@@ -7,7 +7,7 @@ namespace Backups.Entities;
 
 public class BackupTask
 {
-    public BackupTask(Config config, IPath path, Backup backup)
+    public BackupTask(Config config, IPath path, IBackup backup)
     {
         Objects = new List<BackupObject>();
         Config = config;
@@ -17,7 +17,7 @@ public class BackupTask
 
     public IReadOnlyList<BackupObject> Objects { get; private set; }
     public Config Config { get; }
-    public Backup Backup { get; }
+    public IBackup Backup { get; }
     public IPath Path { get; }
 
     public void RemoveBackupObject(BackupObject newObject)
@@ -47,7 +47,7 @@ public class BackupTask
     public void Run()
     {
         DateTime data = DateTime.Now;
-        string dataToString = data.ToString(CultureInfo.CurrentCulture).Replace(":", "_");
+        string dataToString = data.ToString("MM/dd/yyyy_HH_mm_ss");
         IPath fullPath = Path.Concat(dataToString);
         IStorage newStorage = Config.Algorithm.RunStorageAlgorithm(Config.Archiver, Config.Repository, Objects, fullPath, dataToString);
         var newPoint = new RestorePoint(Objects, newStorage, data);

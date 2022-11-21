@@ -10,7 +10,7 @@ public class ArchiveAsZip : IArchive
 {
     public IStorage Archive(IRepository repository, IReadOnlyList<BackupObject> backupObjects, IPath path, string name)
     {
-        IPath zipPath = path.Concat(name + ".zip");
+        IPath zipPath = path.Concat($"{name}.zip");
         Visitor visitor;
         using (Stream stream = repository.OpenWrite(zipPath))
         {

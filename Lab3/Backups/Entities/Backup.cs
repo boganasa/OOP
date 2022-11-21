@@ -1,8 +1,9 @@
 ﻿using System.Drawing;
+using Backups.Services;
 
 namespace Backups.Entities;
 
-public class Backup
+public class Backup : IBackup
 {
     public Backup()
     {
