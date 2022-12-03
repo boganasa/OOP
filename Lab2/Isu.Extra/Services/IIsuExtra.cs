@@ -1,6 +1,4 @@
-﻿using Isu.Entities;
-using Isu.Extra;
-using Isu.Extra.Models;
+﻿using Isu.Extra.Models;
 
 namespace Isu.Extra.Services;
 

@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Isu.Entities;
+﻿using Isu.Entities;
 using Isu.Extra.Exceptions;
 using Isu.Extra.Models;
 using Isu.Models;
@@ -89,12 +88,7 @@ public class IsuExtra : IIsuService, IIsuExtra
             }
         }
 
-        if (!flag && course.GetDivisions().Count != 0)
-        {
-            throw new IsNotSuitableCoursesException(student, course);
-        }
-
-        return null!;
+        throw new IsNotSuitableCoursesException(student, course);
     }
 
     public TimeTable DeleteReservation(ExtraStudent student, Division division)
@@ -128,7 +122,8 @@ public class IsuExtra : IIsuService, IIsuExtra
             throw new InvalidOperationException();
         }
 
-        var extraGroup = new ExtraGroup(group.Name(), null!);
+        var extraGroup = new ExtraGroup(group.Name(), new TimeTable(new List<Lesson>()));
+        _listOfGroup.Add(extraGroup);
         return group;
     }
 

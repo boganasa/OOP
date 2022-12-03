@@ -22,7 +22,6 @@
     <ItemGroup>
       <Compile Remove="Entities\CounterOfStudents.cs" />
       <Compile Remove="Entities\ListOfGroups.cs" />
-      <Compile Remove="Models\пркнр.cs" />
     </ItemGroup>
     
 </Project>

@@ -1,6 +1,4 @@
-﻿using Isu.Entities;
-
-namespace Isu.Extra;
+﻿namespace Isu.Extra;
 using Isu.Extra.Models;
 public class Division
 {

@@ -1,9 +1,5 @@
-﻿using Isu.Entities;
-using Isu.Extra.Models;
+﻿using Isu.Extra.Models;
 using Isu.Extra.Services;
-
-using Isu.Models;
-
 using Xunit;
 namespace Isu.Extra.Test;
 

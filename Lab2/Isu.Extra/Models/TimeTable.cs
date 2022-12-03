@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Isu.Extra.Exceptions;
+﻿using Isu.Extra.Exceptions;
 
 namespace Isu.Extra.Models;
 

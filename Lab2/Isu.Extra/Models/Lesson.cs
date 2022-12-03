@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Isu.Extra.Exceptions;
+﻿using Isu.Extra.Exceptions;
 
 namespace Isu.Extra;
 
