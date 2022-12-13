@@ -7,6 +7,80 @@ namespace Banks.Console;
 
 public class Program
 {
+    private static void Main(string[] args)
+    {
+        var centralBank = new CentralBank();
+        var clients = new List<Client>();
+        int key = 0;
+        while (key != 8)
+        {
+            System.Console.WriteLine(
+                "What do you want to do?\n1 - Create bank\n2 - Create client\n3 - Add information about existing client");
+            System.Console.WriteLine(
+                "4 - Add account to client\n5 - Put money\n6 - Withdraw money\n7 - Transfer money\n8 - Exit");
+            key = Convert.ToInt32(System.Console.ReadLine());
+            Receiver receiver = new Receiver(key);
+            PaymentHandler bankPaymentHandler = new BankPaymentHandler();
+            PaymentHandler moneyPaymentHadler = new MoneyPaymentHandler();
+            PaymentHandler paypalPaymentHandler = new PayPalPaymentHandler();
+            bankPaymentHandler.Successor = paypalPaymentHandler;
+            paypalPaymentHandler.Successor = moneyPaymentHadler;
+            bankPaymentHandler.Handle(receiver);
+        }
+    }
+}
+
+public class Receiver
+{
+    public Receiver(int key)
+    {
+        Key = key;
+    }
+
+    public int Key { get; }
+}
+
+public abstract class PaymentHandler
+{
+    public PaymentHandler Successor { get; set; } = null!;
+    public abstract void Handle(Receiver receiver);
+}
+
+public class BankPaymentHandler : PaymentHandler
+{
+    public override void Handle(Receiver receiver)
+    {
+        if (receiver.Key == 1)
+            System.Console.WriteLine("Выполняем банковский перевод");
+        else if (Successor != null)
+            Successor.Handle(receiver);
+    }
+}
+
+public class PayPalPaymentHandler : PaymentHandler
+{
+    public override void Handle(Receiver receiver)
+    {
+        if (receiver.PayPalTransfer == true)
+            Console.WriteLine("Выполняем перевод через PayPal");
+        else if (Successor != null)
+            Successor.Handle(receiver);
+    }
+}
+
+public class MoneyPaymentHandler : PaymentHandler
+{
+    public override void Handle(Receiver receiver)
+    {
+        if (receiver.MoneyTransfer == true)
+            Console.WriteLine("Выполняем перевод через системы денежных переводов");
+        else if (Successor != null)
+            Successor.Handle(receiver);
+    }
+}
+
+/*public class Program
+{
     public static void Main(string[] args)
     {
         var centralBank = new CentralBank();
@@ -313,4 +387,4 @@ public class Program
             }
         }
     }
-}
+}*/
